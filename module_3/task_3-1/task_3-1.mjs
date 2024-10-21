@@ -6,7 +6,7 @@ printOut("--- Part 1, 2, 3 -----------------------------------------------------
 /* Put your code below here!*/
 printOut("Task 1, 2 and 3");
 
-let wakeUpTime = 8;
+let wakeUpTime = Math.ceil(Math.random() *9);
 if (wakeUpTime==7) {
   printOut("I can take the bus to school.");
 }
@@ -20,7 +20,7 @@ else {
 printOut(newLine);
 
 printOut("--- Part 4, 5 --------------------------------------------------------------------------------------------");
-let number= 8;
+let number= Math.floor(Math.random()* 8);
 
 if (number>0){
   printOut ("Its positive");
