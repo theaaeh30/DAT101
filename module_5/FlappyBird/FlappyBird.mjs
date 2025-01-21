@@ -5,6 +5,7 @@ import libSprite from "../../common/libs/libSprite.mjs";
 import THero from "./hero.mjs";
 import TObstacle from "./obstacle.mjs";
 
+
 //--------------- Objects and Variables ----------------------------------//
 const chkMuteSound = document.getElementById("chkMuteSound");
 const rbDayNight = document.getElementsByName("rbDayNight");
@@ -163,3 +164,4 @@ rbDayNight[1].addEventListener("change", setDayNight);
 // Load the sprite sheet
 spcvs.loadSpriteSheet("./Media/FlappyBirdSprites.png", loadGame);
 document.addEventListener("keydown", onKeyDown);
+
