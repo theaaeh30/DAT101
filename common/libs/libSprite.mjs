@@ -9,11 +9,14 @@ class TSpriteCanvas {
   #cvs;
   #ctx;
   #img;
+  #boundingRect;
 
   constructor(aCanvas) {
     this.#cvs = aCanvas;
     this.#ctx = aCanvas.getContext("2d");
     this.#img = new Image();
+    this.#boundingRect = this.#cvs.getBoundingClientRect();
+    this.mousePos = new lib2D.TPosition(0, 0);
   }
 
   loadSpriteSheet(aFileName, aLoadedFinal) {
@@ -44,11 +47,33 @@ class TSpriteCanvas {
     }else{
       this.#ctx.drawImage(this.#img, sx, sy, sw, sh, dx, dy, dw, dh);
     }
+  } // End of drawSprite
+
+  drawText(aText, aPos){
+    this.#ctx.font = "25px Arial";
+    this.#ctx.fillStyle = "#333333";
+    this.#ctx.textAlign = "right";
+    this.#ctx.fillText(aText, aPos.x, aPos.y);
   }
 
   clearCanvas() {
     this.#ctx.clearRect(0, 0, this.#cvs.width, this.#cvs.height);
   }
+
+  addEventListener(aType, aListener){
+    this.#cvs.addEventListener(aType, aListener);
+  }
+
+  getMousePos(aEvent){
+    this.mousePos.x = aEvent.clientX - this.#boundingRect.left;
+    this.mousePos.y = aEvent.clientY - this.#boundingRect.top;
+    return this.mousePos;
+  }
+
+  get style(){
+    return this.#cvs.style;
+  }
+
 } // End of TSpriteCanvas class
 
 /* 
@@ -101,6 +126,14 @@ class TSprite {
     return this.#pos.y;
   }
 
+  get left(){
+    return this.#pos.x;
+  }
+
+  get right(){
+    return this.#pos.x + this.#spi.width;
+  }
+
   set posX(aX) {
     this.#pos.x = aX;
     this.boundingBox.x = aX;
@@ -118,6 +151,10 @@ class TSprite {
     this.boundingBox.y = aY;
   }
 
+  getPos(){
+    return this.#pos;
+  }
+
   get index() {
     return this.#index;
   }
@@ -128,6 +165,10 @@ class TSprite {
 
   hasCollided(aSprite){
     return this.boundingBox.isInsideRect(aSprite.boundingBox);
+  }
+
+  getCenter(){
+    return this.boundingBox.center;
   }
 
 } //End of TSprite class
