@@ -1,204 +1,196 @@
 "use strict";
+import lib2D from "./lib2d.mjs";
 /**
- * @module libSound
- * @description This module provides classes to play sound files. And generate sound effects.
+ * @library libSprite
+ * @description A library for classes that manage sprite animations.
  */
 
-/**
- * Enum of octaves
- * @enum {number}
- */
-// prettier-ignore
-export const EOctave = {
-  Octave1: 0, Octave2: 1, Octave3: 2, Octave4: 3, Octave5: 4, Octave6: 5, Octave7: 6, Octave8: 7, Octave9: 8
-};
+class TSpriteCanvas {
+  #cvs;
+  #ctx;
+  #img;
+  #boundingRect;
 
-/**
- * Enum of note names
- */
-// prettier-ignore
-export const ENoteName = {
-  C: "C", Db: "Db", D: "D", Eb: "Eb", E: "E", F: "F", Gb: "Gb", G: "G", Ab: "Ab", A: "A", Bb: "Bb", B: "B"
-};
-
-/**
- * Array for all basic notes
- * @type {Array}
- * @const
- * Use example: Notes.C[EOctave.Octave4]
- */
-// prettier-ignore
-const Notes = {
-  //       0      1     2        3        4      5         6      7         8
-     C: [16.35, 32.70,  65.41, 130.80, 261.60, 523.30, 1047.00, 2093.00, 4186.00],
-    Db: [17.32, 34.65,  69.30, 138.60, 277.20, 554.40, 1109.00, 2217.00, 4435.00],
-     D: [18.35, 36.71,  73.42, 146.80, 293.70, 587.30, 1175.00, 2349.00, 4699.00],
-    Eb: [19.45, 38.89,  77.78, 155.60, 311.10, 622.30, 1245.00, 2489.00, 4978.00],
-     E: [20.60, 41.20,  82.41, 164.80, 329.60, 659.30, 1319.00, 2637.00, 5274.00],
-     F: [21.83, 43.65,  87.31, 174.60, 349.20, 698.50, 1397.00, 2794.00, 5588.00],
-    Gb: [23.12, 46.25,  92.50, 185.00, 370.00, 740.00, 1480.00, 2960.00, 5920.00],
-     G: [24.50, 49.00,  98.00, 196.00, 392.00, 784.00, 1568.00, 3136.00, 6272.00],
-    Ab: [25.96, 51.91, 103.80, 207.70, 415.30, 830.60, 1661.00, 3322.00, 6645.00],
-     A: [27.50, 55.00, 110.00, 220.00, 441.00, 880.00, 1760.00, 3520.00, 7040.00],
-    Bb: [29.14, 58.27, 116.50, 233.10, 466.20, 932.30, 1865.00, 3729.00, 7459.00],
-     B: [30.87, 61.74, 123.50, 246.90, 493.90, 987.80, 1976.00, 3951.00, 7902.00]
-};
-
-/**
- * Enum of waveform types
- * @enum {string}
- */
-// prettier-ignore
-export const EWaveformType = {
-  Sine: "sine", Square: "square", Sawtooth: "sawtooth", Triangle: "triangle"
-};
-
-let audioContext = null;
-
-
-/**
- * @class TSoundWave
- * @description This class generates a sound wave
- * @param {EOctave} aOctave - The octave of the note
- * @param {ENoteName} aNote - The note name
- * @param {EWaveformType} aWaveformType - The waveform type
- */
-class TSoundWave {
-  #oscillator;
-  #gainNode; // Reduce the "click" sound when the sound starts and stops
-  #frequency;
-  #waveformType;
-  constructor(aOctave, aNote, aWaveformType = EWaveformType.Sine) {
-    if (audioContext === null) throw new Error("AudioContext has not been created. Please create a new instance of TAudioContext in a user interaction event.");
-    this.#frequency = Notes[aNote][aOctave];
-    this.#waveformType = aWaveformType;
-
-    this.#setUpNodes();
+  constructor(aCanvas) {
+    this.#cvs = aCanvas;
+    this.#ctx = aCanvas.getContext("2d");
+    this.#img = new Image();
+    this.#boundingRect = this.#cvs.getBoundingClientRect();
+    this.mousePos = new lib2D.TPosition(0, 0);
   }
 
-  #setUpNodes() {
-    this.#oscillator = audioContext.createOscillator();
-    this.#oscillator.type = this.#waveformType;
-    this.#oscillator.frequency.value = this.#frequency;
-
-    this.#gainNode = audioContext.createGain();
-    this.#oscillator.connect(this.#gainNode);
-    this.#gainNode.connect(audioContext.destination);
-    this.#gainNode.gain.setValueAtTime(0, audioContext.currentTime) // Mute the sound
-    this.#oscillator.start(); // Start the oscillator, in muted state
+  loadSpriteSheet(aFileName, aLoadedFinal) {
+    this.#img.onload = aLoadedFinal;
+    this.#img.src = aFileName;
   }
 
-  play(){
-    this.#gainNode.gain.setTargetAtTime(1, audioContext.currentTime, 0.015); // Full volume in 0.015 seconds to avoid "click" sound
-  }
-
-  stop(){
-    this.#gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.015); // Mute the sound, 0.015 seconds to avoid "click" sound
-  }
-
-}
-
-
-/**
- * @function activateAudioContext
- * @description This function activates the audio context, call this in a user interaction event! This can be called multiple times, but only the first call will create the audio context.
- */
-function activateAudioContext() {
-  if (audioContext === null) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  return audioContext; // Return the audio context
-}
-
-//--------------- Objects and Variables ----------------------------------//
-const EAudioStateType = { Stopped: 1, Playing: 2, Paused: 3 };
-
-//--------------- Classes ------------------------------------------------//
-class TSoundFile {
-  #audio;
-  #audioState;
-  constructor(aSoundFile) {
-    this.#audio = new Audio(aSoundFile);
-    this.#audioState = EAudioStateType.Stopped;
-  }
-
-  play() {
-    if (!this.#audioState === EAudioStateType.Stopped) {
-      this.#audio.currentTime = 0;
+  drawSprite(aSpriteInfo, aDx = 0, aDy = 0, aIndex = 0, aRot = 0) {
+    let index = aIndex;
+    const sx = aSpriteInfo.x + index * aSpriteInfo.width;
+    const sy = aSpriteInfo.y;
+    const sw = aSpriteInfo.width;
+    const sh = aSpriteInfo.height;
+    const dx = aDx;
+    const dy = aDy;
+    const dw = sw;
+    const dh = sh;
+    if(aRot !== 0){
+      //Hvis vi har rotasjon må vi flytte mitten av destinasjonen til 0,0
+      const cx = dx + dw / 2;
+      const cy = dy + dh / 2;
+      const rad = aRot * Math.PI / 180;
+      this.#ctx.translate(cx, cy);
+      this.#ctx.rotate(rad);
+      this.#ctx.drawImage(this.#img, sx, sy, sw, sh, -dw / 2, -dh / 2, dw, dh);
+      this.#ctx.rotate(-rad);
+      this.#ctx.translate(-cx, -cy);
+    }else{
+      this.#ctx.drawImage(this.#img, sx, sy, sw, sh, dx, dy, dw, dh);
     }
-    if (this.#audioState !== EAudioStateType.Playing) {
-      this.#audio.play();
-      this.#audioState = EAudioStateType.Playing;
+  } // End of drawSprite
+
+  drawText(aText, aPos){
+    this.#ctx.font = "25px Arial";
+    this.#ctx.fillStyle = "#333333";
+    this.#ctx.textAlign = "right";
+    this.#ctx.fillText(aText, aPos.x, aPos.y);
+  }
+
+  clearCanvas() {
+    this.#ctx.clearRect(0, 0, this.#cvs.width, this.#cvs.height);
+  }
+
+  addEventListener(aType, aListener){
+    this.#cvs.addEventListener(aType, aListener);
+  }
+
+  getMousePos(aEvent){
+    this.mousePos.x = aEvent.clientX - this.#boundingRect.left;
+    this.mousePos.y = aEvent.clientY - this.#boundingRect.top;
+    return this.mousePos;
+  }
+
+  get style(){
+    return this.#cvs.style;
+  }
+
+} // End of TSpriteCanvas class
+
+/* 
+ Utvid konstruktøren til å ta inn et punkt for destinasjon til sprite.
+*/
+
+class TSprite {
+  #spcvs;
+  #spi;
+  #pos;
+  #index;
+  #speedIndex;
+  constructor(aSpriteCanvas, aSpriteInfo, aPosition) {
+    this.#spcvs = aSpriteCanvas;
+    this.#spi = aSpriteInfo;
+    this.#pos = aPosition.clone(); //Vi trenger en kopi av posisjonen
+    this.#index = 0;
+    this.animateSpeed = 0;
+    this.#speedIndex = 0;
+    this.boundingBox = new lib2D.TRectangle(this.#pos.x, this.#pos.y, this.#spi.width, this.#spi.height);
+    this.rotation = 0;
+  }
+
+  draw() {
+    if (this.animateSpeed > 0) {
+      this.#speedIndex += this.animateSpeed / 100;
+      if (this.#speedIndex >= 1) {
+        this.#index++;
+        this.#speedIndex = 0;
+        if (this.#index >= this.#spi.count) {
+          this.#index = 0;
+        }
+      }
     }
+    this.#spcvs.drawSprite(this.#spi, this.#pos.x, this.#pos.y, this.#index, this.rotation);
   }
 
-  stop() {
-    this.#audio.pause();
-    this.#audio.currentTime = 0; // Reset the audio to the beginning
-    this.#audioState = EAudioStateType.Stopped; // Set the audio state to stopped
+  translate(aDx, aDy) {
+    this.#pos.x += aDx;
+    this.#pos.y += aDy;
+    this.boundingBox.x += aDx;
+    this.boundingBox.y += aDy;
   }
 
-  pause() {
-    this.#audio.pause();
-    this.#audioState = EAudioStateType.Paused;
+  get posX() {
+    return this.#pos.x;
   }
 
-  get audioState() {
-    return this.#audioState;
+  get posY() {
+    return this.#pos.y;
   }
-}
 
-//--------------- Exports -----------------------------------------------//
+  get left(){
+    return this.#pos.x;
+  }
+
+  get right(){
+    return this.#pos.x + this.#spi.width;
+  }
+
+  set posX(aX) {
+    this.#pos.x = aX;
+    this.boundingBox.x = aX;
+  }
+
+  set posY(aY) {
+    this.#pos.y = aY;
+    this.boundingBox.y = aY;
+  }
+
+  setPos(aX, aY) {
+    this.#pos.x = aX;
+    this.#pos.y = aY;
+    this.boundingBox.x = aX;
+    this.boundingBox.y = aY;
+  }
+
+  getPos(){
+    return this.#pos;
+  }
+
+  get index() {
+    return this.#index;
+  }
+  
+  set index(aIndex){
+    this.#index = aIndex;
+  }
+
+  hasCollided(aSprite){
+    return this.boundingBox.isInsideRect(aSprite.boundingBox);
+  }
+
+  getCenter(){
+    return this.boundingBox.center;
+  }
+
+} //End of TSprite class
+
 export default {
   /**
-   * @enum {EAudioStateType}
-   * @description This enumeration defines the audio state types.
+   * @class TSpriteCanvas
+   * @description A class that manage sprite canvas for lading sprite sheets.
+   * @param {HTMLCanvasElement} aCanvas - The canvas element to use.
+   * @function loadSpriteSheet - Loads a sprite sheet image.
+   * @param {string} aFileName - The file name of the sprite sheet image.
+   * @param {function} aLoadedFinal - A callback function to call when the image is done loading.
    */
-  EAudioStateType,
+  TSpriteCanvas: TSpriteCanvas,
 
   /**
-   * @class TSoundFile
-   * @description This class plays a sound
-   * @param {string} aSoundFile - The sound file to play
-   * @method play - Play the sound
-   * @method stop - Stop the sound
-   * @method pause - Pause the sound
+   * @class TSprite
+   * @description A class that manage sprite animations.
+   * @param {TSpriteCanvas} aSpriteCanvas - The sprite canvas to use.
+   * @param {object} aSpriteInfo - The sprite information.
+   * @param {TPosition} aPosition - The position of the sprite.
+   * @function draw - Draws the sprite on the canvas.
    */
-  TSoundFile,
-
-  /**
-   * @function activateAudioContext
-   * @description This function activates the audio context, call this in a user interaction event!
-   */
-  activateAudioContext,
-
-  /**
-   * @enum {EOctave}
-   * @description This enumeration defines the octaves
-   * @example Notes.C[EOctave.Octave4]
-   */
-  EOctave,
-
-  /**
-   * @enum {ENoteName}
-   * @description This enumeration defines the note names
-   */
-  ENoteName,
-
-  /**
-   * @enum {EWaveformType}
-   * @description This enumeration defines the waveform types
-   */
-  EWaveformType,
-
-  /**
-   * @class TSoundWave
-   * @description This class generates a
-   * @param {EOctave} aOctave - The octave of the note
-   * @param {ENoteName} aNote - The note name
-   * @param {EWaveformType} aWaveformType - The waveform type
-   * @method play - Play the sound
-   * @method stop - Stop the sound
-   */
-  TSoundWave
+  TSprite: TSprite,
 };
