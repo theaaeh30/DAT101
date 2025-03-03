@@ -77,3 +77,5 @@ export class TGameBoard {
   get size(){
     return {width: this.#cvs.width, height: this.#cvs.height};
   }
+
+}
