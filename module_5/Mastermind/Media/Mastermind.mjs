@@ -133,3 +133,4 @@ function loadGame() {
 
 spcvs.loadSpriteSheet("./Media/SpriteSheet.png", loadGame);
 window.addEventListener("resize", spcvs.updateBoundsRect.bind(spcvs));
+
