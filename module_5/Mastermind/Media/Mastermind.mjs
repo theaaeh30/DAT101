@@ -7,6 +7,7 @@ import lib2D from "../../common/libs/lib2d_v2.mjs";
 import libSprite from "../../common/libs/libSprite_v2.mjs";
 import { TColorPicker } from "./ColorPicker.mjs";
 import MastermindBoard from "./MastermindBoard.mjs";
+import { TMenu } from "./menu.mjs";
 
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ export const SpriteInfoList = {
   ButtonCheat:        { x:   0, y: 139, width:  75, height:  49, count: 2 },
   PanelHideAnswer:    { x:   0, y:  90, width: 186, height:  49, count: 1 },
   ColorPicker:        { x:   0, y: 200, width:  34, height:  34, count: 8 },
-  ColorHint:          { x:   0, y: 250, width:  19, height:  18, count: 2 },
+  ColorHint:          { x:   0, y: 250, width:  19, height:  18, count: 3 },
 };
 
 const cvs = document.getElementById("cvs");
@@ -34,7 +35,11 @@ export const GameProps = {
   snapTo:{
     positions: MastermindBoard.ColorAnswer.Row10,
     distance: 20
-  }
+  },
+  computerAnswers: [],
+  roundIndicator: null,
+  menu: null,
+  playerAnswers: [null, null, null, null],
 }
 
 
@@ -43,17 +48,49 @@ export const GameProps = {
 //--------------------------------------------------------------------------------------------------------------------
 
 function newGame() {
+  generateComputerAnswer();
 }
 
 function drawGame(){
   spcvs.clearCanvas();
   //Draw all game objects here, remember to think about the draw order (layers in PhotoShop for example!)
   GameProps.board.draw();
+
+  for(let i = 0; i < GameProps.computerAnswers.length; i++){
+    const computerAnswer = GameProps.computerAnswers[i];
+    computerAnswer.draw();
+  }
+  
+  GameProps.roundIndicator.draw();
+
+  GameProps.menu.draw();
+
   for(let i = 0; i < GameProps.colorPickers.length; i++){
     const colorPicker = GameProps.colorPickers[i];
     colorPicker.draw();
   }
+
   requestAnimationFrame(drawGame);
+}
+
+function generateComputerAnswer(){
+  //Først må vi genere 4 tilfeldige farger
+  //Deretter må vi plassere disse fargene i computerAnswers
+  //Vi må bruke libSprite.TSprite for å lage en sprite for hver farge
+  for(let i = 0; i < 4 ; i++){
+    const colorIndex = Math.floor(Math.random() * SpriteInfoList.ColorPicker.count);
+    const pos = MastermindBoard.ComputerAnswer[i];
+    const sprite = new libSprite.TSprite(spcvs, SpriteInfoList.ColorPicker,pos);
+    sprite.index = colorIndex;
+    GameProps.computerAnswers.push(sprite);
+  }
+
+}
+
+function moveRoundIndicator(){
+  const pos = GameProps.snapTo.positions[0];
+  GameProps.roundIndicator.x = pos.x - 84;
+  GameProps.roundIndicator.y = pos.y + 7;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -66,7 +103,7 @@ function loadGame() {
   cvs.width = SpriteInfoList.Board.width;
   cvs.height = SpriteInfoList.Board.height;
   spcvs.updateBoundsRect();
-  const pos = new lib2D.TPoint(0, 0);
+  let pos = new lib2D.TPoint(0, 0);
   GameProps.board = new libSprite.TSprite(spcvs, SpriteInfoList.Board, pos);
  
   const ColorKeys = Object.keys(MastermindBoard.ColorPicker);
@@ -77,6 +114,12 @@ function loadGame() {
     GameProps.colorPickers.push(colorPicker);
   }
 
+  pos = GameProps.snapTo.positions[0];
+  GameProps.roundIndicator = new libSprite.TSprite(spcvs, SpriteInfoList.ColorHint, pos);
+  GameProps.roundIndicator.index = 2;
+  moveRoundIndicator();
+
+  GameProps.menu = new TMenu(spcvs);
 
   newGame();
   requestAnimationFrame(drawGame); // Start the animation loop
@@ -89,3 +132,4 @@ function loadGame() {
 
 
 spcvs.loadSpriteSheet("./Media/SpriteSheet.png", loadGame);
+window.addEventListener("resize", spcvs.updateBoundsRect.bind(spcvs));
