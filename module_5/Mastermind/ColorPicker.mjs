@@ -4,7 +4,6 @@ import libSprite from "../../common/libs/libSprite_v2.mjs";
 import MastermindBoard from "./MastermindBoard.mjs";
 import { GameProps } from "./Mastermind.mjs";
 
-//Lag en meny klasse "TMenu", ingen arv, skal ha tre knapper og en sprite
 const Positions = MastermindBoard.ColorPicker;
 
 
@@ -77,4 +76,4 @@ export class TColorPicker extends libSprite.TSpriteDraggable {
     }
   }
 
-}
+} 

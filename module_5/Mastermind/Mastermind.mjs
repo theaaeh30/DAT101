@@ -3,8 +3,8 @@
 //--------------------------------------------------------------------------------------------------------------------
 //------ Imports
 //--------------------------------------------------------------------------------------------------------------------
-import lib2d from '../common/libs/lib2d_v2.mjs';
-import libSprite from '../common/libs/libSprite_v2.mjs';
+import lib2D from "../../common/libs/lib2d_v2.mjs";
+import libSprite from "../../common/libs/libSprite_v2.mjs";
 import { TColorPicker } from "./ColorPicker.mjs";
 import MastermindBoard from "./MastermindBoard.mjs";
 import { TMenu } from "./menu.mjs";
@@ -133,4 +133,3 @@ function loadGame() {
 
 spcvs.loadSpriteSheet("./Media/SpriteSheet.png", loadGame);
 window.addEventListener("resize", spcvs.updateBoundsRect.bind(spcvs));
-
