@@ -16,10 +16,10 @@ import { TMenu } from "./menu.mjs";
 
 // prettier-ignore
 export const SpriteInfoList = {
-  Board:              { x: 320, y:   0, width: 441, height: 640, count: 1 },
-  ButtonNewGame:      { x:   0, y:  45, width: 160, height:  45, count: 2 },
-  ButtonCheckAnswer:  { x:   0, y:   0, width: 160, height:  45, count: 2 },
-  ButtonCheat:        { x:   0, y: 139, width:  75, height:  49, count: 2 },
+  Board:              { x: 640, y:   0, width: 441, height: 640, count: 1 },
+  ButtonNewGame:      { x:   0, y:  45, width: 160, height:  45, count: 4 },
+  ButtonCheckAnswer:  { x:   0, y:   0, width: 160, height:  45, count: 4 },
+  ButtonCheat:        { x:   0, y: 139, width:  75, height:  49, count: 4 },
   PanelHideAnswer:    { x:   0, y:  90, width: 186, height:  49, count: 1 },
   ColorPicker:        { x:   0, y: 200, width:  34, height:  34, count: 8 },
   ColorHint:          { x:   0, y: 250, width:  19, height:  18, count: 3 },
@@ -33,13 +33,14 @@ export const GameProps = {
   board: null,
   colorPickers:[],
   snapTo:{
-    positions: MastermindBoard.ColorAnswer.Row10,
+    positions: MastermindBoard.ColorAnswer.Row1,
     distance: 20
   },
   computerAnswers: [],
   roundIndicator: null,
   menu: null,
   playerAnswers: [null, null, null, null],
+  answerHintRow: MastermindBoard.AnswerHint.Row1,
 }
 
 
@@ -87,7 +88,7 @@ function generateComputerAnswer(){
 
 }
 
-function moveRoundIndicator(){
+export function moveRoundIndicator(){
   const pos = GameProps.snapTo.positions[0];
   GameProps.roundIndicator.x = pos.x - 84;
   GameProps.roundIndicator.y = pos.y + 7;
@@ -107,7 +108,7 @@ function loadGame() {
   GameProps.board = new libSprite.TSprite(spcvs, SpriteInfoList.Board, pos);
  
   const ColorKeys = Object.keys(MastermindBoard.ColorPicker);
-  console.log(ColorKeys);
+  
   for(let i = 0; i < ColorKeys.length; i++){
     const colorName = ColorKeys[i]; //Color name
     const colorPicker = new TColorPicker(spcvs, SpriteInfoList.ColorPicker, colorName, i);
