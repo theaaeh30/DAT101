@@ -20,6 +20,8 @@ export const SpriteInfoList = {
   hero3:        { x:    0, y: 593, width:   34, height:  24, count:  4 },
   obstacle:     { x:    0, y:   0, width:   52, height: 320, count:  4 },
   background:   { x:  246, y:   0, width:  576, height: 512, count:  2 },
+  backgroundDay: { x: 246, y: 0, width: 576, height: 512, count: 1 },
+  backgroundNight: { x: 822, y: 0, width: 576, height: 512, count: 1 },
   flappyBird:   { x:    0, y: 330, width:  178, height:  50, count:  1 },
   ground:       { x:  246, y: 512, width: 1152, height: 114, count:  1 },
   numberSmall:  { x:  681, y: 635, width:   14, height:  20, count: 10 },
@@ -60,6 +62,11 @@ function playSound(aSound) {
 }
 
 function loadGame() {
+  GameProps.sounds.countDown = new libSound.TSoundFile("../../Media/countdown.mp3");
+  GameProps.sounds.swallow = new libSound.TSoundFile("../../Media/food.mp3");
+  GameProps.sounds.flap = new libSound.TSoundFile("../../Media/flap.mp3");
+  GameProps.sounds.death = new libSound.TSoundFile("../../Media/heroIsDead.mp3");
+  GameProps.sounds.gameOver = new libSound.TSoundFile("../../Media/gameOver.mp3");
   console.log("Game ready to load");
   cvs.width = SpriteInfoList.background.width;
   cvs.height = SpriteInfoList.background.height;
@@ -137,26 +144,50 @@ function animateGame() {
       if (delObstacleIndex >= 0) {
         GameProps.obstacles.splice(delObstacleIndex, 1);
       }
-    case EGameStatus.gameOver:
-      let delBaitIndex = -1;
-      const posHero = GameProps.hero.getCenter();
-      for (let i = 0; i < GameProps.baits.length; i++) {
-        const bait = GameProps.baits[i];
-        bait.update();
-        const posBait = bait.getCenter();
-        const dist = posHero.distanceToPoint(posBait);
-        if (dist < 15) {
-          delBaitIndex = i;
+      {
+        let delBaitIndex = -1;
+        const posHero = GameProps.hero.getCenter();
+        for (let i = 0; i < GameProps.baits.length; i++) {
+          const bait = GameProps.baits[i];
+          bait.update();
+          const posBait = bait.getCenter();
+          const dist = posHero.distanceToPoint(posBait);
+          if (dist < 15) {
+            delBaitIndex = i;
+          }
+        }
+        if (delBaitIndex >= 0) {
+          GameProps.baits.splice(delBaitIndex, 1);
+          GameProps.menu.incScore(10);
+          GameProps.sounds.swallow.play();
         }
       }
-      if (delBaitIndex >= 0) {
-        GameProps.baits.splice(delBaitIndex, 1);
-        GameProps.menu.incScore(10);
+      if (GameProps.hero.isDead && GameProps.hero.posY >= cvs.height - SpriteInfoList.ground.height) {
+        GameProps.sounds.gameOver.play();
       }
       break;
-      case EGameStatus.idle:
-        GameProps.hero.updateIdle();
-        break;
+    case EGameStatus.gameOver:
+      {
+        let delBaitIndex = -1;
+        const posHero = GameProps.hero.getCenter();
+        for (let i = 0; i < GameProps.baits.length; i++) {
+          const bait = GameProps.baits[i];
+          bait.update();
+          const posBait = bait.getCenter();
+          const dist = posHero.distanceToPoint(posBait);
+          if (dist < 15) {
+            delBaitIndex = i;
+          }
+        }
+        if (delBaitIndex >= 0) {
+          GameProps.baits.splice(delBaitIndex, 1);
+          GameProps.menu.incScore(10);
+        }
+      }
+      break;
+    case EGameStatus.idle:
+      GameProps.hero.updateIdle();
+      break;
   }
 }
 
@@ -182,17 +213,18 @@ function spawnBait() {
 }
 
 export function startGame() {
-  GameProps.status = EGameStatus.playing;
-  //The hero is dead, so we must create a new hero
-  GameProps.hero = new THero(spcvs, SpriteInfoList.hero1, new lib2d.TPosition(100, 100));
-  //We must reset the obstacles and baits
-  GameProps.obstacles = [];
-  GameProps.baits = [];
-  GameProps.menu.reset();
-  spawnObstacle();
-  spawnBait();
-  //Play the running sound
-  GameProps.sounds.running.play();
+  GameProps.status = EGameStatus.getReady;
+  GameProps.sounds.countDown.play();
+  setTimeout(() => {
+    GameProps.status = EGameStatus.playing;
+    GameProps.hero = new THero(spcvs, SpriteInfoList.hero1, new lib2d.TPosition(100, 100));
+    GameProps.obstacles = [];
+    GameProps.baits = [];
+    GameProps.menu.reset();
+    spawnObstacle();
+    spawnBait();
+    GameProps.sounds.running.play();
+  }, 3000); // Adjust the timeout duration to match the length of the countdown sound
 }
 
 //--------------- Event Handlers -----------------------------------------//
@@ -210,9 +242,13 @@ function setSoundOnOff() {
 function setDayNight() {
   if (rbDayNight[0].checked) {
     GameProps.dayTime = true;
+    GameProps.background = new libSprite.TSprite(spcvs, SpriteInfoList.backgroundDay, new lib2d.TPosition(0, 0));
+    GameProps.obstacles.forEach(obstacle => obstacle.setDayAppearance());
     console.log("Day time");
   } else {
     GameProps.dayTime = false;
+    GameProps.background = new libSprite.TSprite(spcvs, SpriteInfoList.backgroundNight, new lib2d.TPosition(0, 0));
+    GameProps.obstacles.forEach(obstacle => obstacle.setNightAppearance());
     console.log("Night time");
   }
 } // end of setDayNight
@@ -222,6 +258,7 @@ function onKeyDown(aEvent) {
     case "Space":
       if (!GameProps.hero.isDead) {
         GameProps.hero.flap();
+        GameProps.sounds.flap.play();
       }
       break;
   }

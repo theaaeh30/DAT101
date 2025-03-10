@@ -40,7 +40,16 @@ class TObstacle {
     if(hasCollided){
       GameProps.hero.flap();
       GameProps.hero.isDead = true;
+      GameProps.sounds.death.play();
     }
+  }
+
+  setDayAppearance() {
+    this.spriteInfo = SpriteInfoList.obstacleDay;
+  }
+
+  setNightAppearance() {
+    this.spriteInfo = SpriteInfoList.obstacleNight;
   }
 
   get right(){
