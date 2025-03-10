@@ -62,11 +62,11 @@ function playSound(aSound) {
 }
 
 function loadGame() {
-  GameProps.sounds.countDown = new libSound.TSoundFile("./Media/countdown.mp3");
-  GameProps.sounds.food = new libSound.TSoundFile("./Media/food.mp3");
-  GameProps.sounds.flap = new libSound.TSoundFile("./Media/flap.mp3");
-  GameProps.sounds.heroIsDead = new libSound.TSoundFile("./Media/heroIsDead.mp3");
-  GameProps.sounds.gameOver = new libSound.TSoundFile("./Media/gameOver.mp3");
+  GameProps.sounds.countDown = new libSound.TSoundFile("../../Media/countdown.mp3");
+  GameProps.sounds.food = new libSound.TSoundFile("../../Media/food.mp3");
+  GameProps.sounds.flap = new libSound.TSoundFile("../../Media/flap.mp3");
+  GameProps.sounds.heroIsDead = new libSound.TSoundFile("../../Media/heroIsDead.mp3");
+  GameProps.sounds.gameOver = new libSound.TSoundFile("../../Media/gameOver.mp3");
   console.log("Game ready to load");
   cvs.width = SpriteInfoList.background.width;
   cvs.height = SpriteInfoList.background.height;
@@ -268,5 +268,5 @@ rbDayNight[0].addEventListener("change", setDayNight);
 rbDayNight[1].addEventListener("change", setDayNight);
 
 // Load the sprite sheet
-spcvs.loadSpriteSheet("./Media/FlappyBirdSprites.png", loadGame);
+spcvs.loadSpriteSheet("../../Media/FlappyBirdSprites.png", loadGame);
 document.addEventListener("keydown", onKeyDown);
