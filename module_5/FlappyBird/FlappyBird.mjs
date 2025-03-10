@@ -48,7 +48,7 @@ export const GameProps = {
   menu: null,
   score: 0,
   bestScore: 0,
-  sounds: {countDown: null, food: null, gameOver: null, dead: null, running: null},
+  sounds: {countDown: null, food: null, gameOver: null, heroIsDead: null, running: null, swallow: null, flap: null, death: null},
 };
 
 //--------------- Functions ----------------------------------------------//
@@ -62,11 +62,11 @@ function playSound(aSound) {
 }
 
 function loadGame() {
-  GameProps.sounds.countDown = new libSound.TSoundFile("../../Media/countdown.mp3");
-  GameProps.sounds.swallow = new libSound.TSoundFile("../../Media/food.mp3");
-  GameProps.sounds.flap = new libSound.TSoundFile("../../Media/flap.mp3");
-  GameProps.sounds.death = new libSound.TSoundFile("../../Media/heroIsDead.mp3");
-  GameProps.sounds.gameOver = new libSound.TSoundFile("../../Media/gameOver.mp3");
+  GameProps.sounds.countDown = new libSound.TSoundFile("./Media/countdown.mp3");
+  GameProps.sounds.food = new libSound.TSoundFile("./Media/food.mp3");
+  GameProps.sounds.flap = new libSound.TSoundFile("./Media/flap.mp3");
+  GameProps.sounds.heroIsDead = new libSound.TSoundFile("./Media/heroIsDead.mp3");
+  GameProps.sounds.gameOver = new libSound.TSoundFile("./Media/gameOver.mp3");
   console.log("Game ready to load");
   cvs.width = SpriteInfoList.background.width;
   cvs.height = SpriteInfoList.background.height;
@@ -80,9 +80,6 @@ function loadGame() {
   GameProps.hero = new THero(spcvs, SpriteInfoList.hero1, pos);
 
   GameProps.menu = new TMenu(spcvs);
-
-  //Load sounds
-  GameProps.sounds.running = new libSound.TSoundFile("./Media/running.mp3");
 
   requestAnimationFrame(drawGame);
   setInterval(animateGame, 10);
@@ -119,6 +116,7 @@ function animateGame() {
       if (GameProps.hero.isDead) {
         GameProps.hero.animateSpeed = 0;
         GameProps.hero.update();
+        GameProps.sounds.heroIsDead.play();
         return;
       }
       GameProps.ground.translate(-GameProps.speed, 0);
@@ -159,7 +157,7 @@ function animateGame() {
         if (delBaitIndex >= 0) {
           GameProps.baits.splice(delBaitIndex, 1);
           GameProps.menu.incScore(10);
-          GameProps.sounds.swallow.play();
+          GameProps.sounds.food.play();
         }
       }
       if (GameProps.hero.isDead && GameProps.hero.posY >= cvs.height - SpriteInfoList.ground.height) {
