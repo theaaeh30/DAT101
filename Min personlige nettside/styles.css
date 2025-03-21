@@ -119,3 +119,63 @@ h5 {
     line-height: 1.6;
 }
 
+/* Profilbilde-seksjon */
+.profile-container {
+    width: 220px; /* Størrelse på bakgrunnssirkelen */
+    height: 220px;
+    background-color: #dc3545; /* Rød bakgrunn */
+    border-radius: 50%; /* Gjør bakgrunnen sirkulær */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Myk skygge */
+}
+
+.profile-container img {
+    width: 180px; /* Størrelse på bildet */
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Profilbilde-seksjon for index.html */
+.profile-container-index {
+    width: 220px; /* Størrelse på bakgrunnssirkelen */
+    height: 220px;
+    background-color: #dc3545; /* Rød bakgrunn */
+    border-radius: 50%; /* Gjør bakgrunnen sirkulær */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Myk skygge */
+}
+
+.profile-container-index img {
+    width: 180px; /* Størrelse på bildet */
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Juster høyden på karusellbildene for små skjermer */
+@media (max-width: 768px) {
+    .carousel-inner img {
+        height: 300px; /* Sett en fast høyde for mobil */
+        object-fit: cover; /* Sørger for at bildet fyller området uten deformasjon */
+    }
+}
+
+/* Juster høyden på karusellbildene for mellomstore skjermer */
+@media (min-width: 768px) and (max-width: 1200px) {
+    .carousel-inner img {
+        height: 400px; /* Sett en fast høyde for iPad */
+        object-fit: cover;
+    }
+}
+
+/* Juster høyden på karusellbildene for store skjermer */
+@media (min-width: 1200px) {
+    .carousel-inner img {
+        height: 500px; /* Sett en fast høyde for PC */
+        object-fit: cover;
+    }
+}
+
