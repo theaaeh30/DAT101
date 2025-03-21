@@ -1,0 +1,121 @@
+/* Global stil */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Bakgrunnsfarge for toppseksjoner */
+section {
+    background-color: #ffffff;
+    padding: 40px 0;
+}
+
+/* Bildeinnstilling for runde bilder */
+img.rounded-circle {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Toppmeny */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: #333;
+}
+
+.navbar-nav .nav-link {
+    color: #555;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #007bff;
+}
+
+.nav-link:hover {
+    color: #dc3545; /* Rød hover-effekt */
+    text-decoration: underline;
+}
+
+/* Info-bokser */
+.card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* Ensartet høyde */
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Løfter boksen litt */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Økt skygge */
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Fordeler innholdet jevnt */
+    height: 100%;
+}
+
+/* Responsiv design */
+@media (max-width: 992px) {
+    .card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Footer */
+footer {
+    background-color: #343a40;
+    color: #fff;
+}
+
+/* Juster bakgrunnsfarger for spesifikke seksjoner */
+footer p {
+    margin: 0;
+}
+
+h5 {
+    font-weight: 600;
+    color: #dc3545; /* Rød farge for overskrifter */
+}
+
+/* Karuselltekststil */
+.carousel-caption {
+    color: #fff; /* Hvit tekst */
+    background-color: rgba(0, 0, 0, 0.5); /* Halvtransparent svart bakgrunn */
+    padding: 10px;
+    border-radius: 10px; /* Runde hjørner */
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7); /* Myk skygge for lesbarhet */
+}
+
+/* Om meg-seksjon */
+#about-me {
+    background-color: #ffffff; /* Hvit bakgrunn som i index.html */
+    padding: 40px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Myk skygge */
+}
+
+#about-me h2 {
+    color: #333; /* Mørk tekstfarge som i index.html */
+    font-weight: 600;
+}
+
+#about-me p {
+    color: #555; /* Mørk grå tekst for lesbarhet */
+    line-height: 1.6;
+}
+

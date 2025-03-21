@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Min Personlige Side</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Egen CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Toppmeny -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">Aurora Multimedia</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">Om meg</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.instagram.com/theaehansen" target="_blank">Instagram</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mailto:tahansen@uia.no">Kontakt</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero bg-light text-center py-5">
+        <h1 class="display-4">Velkommen til min nettside</h1>
+        <p class="lead">Utforsk mine prosjekter, interesser og kontakt meg!</p>
+        <a href="#info-bokser" class="btn btn-danger btn-lg">Les mer</a>
+    </section>
+    <!-- Bilde av deg selv -->
+    <section class="container text-center mt-5">
+        <img src="images/image4.jpg" alt="Min bilde" class="rounded-circle shadow" style="width: 200px; height: 200px;">
+    </section>
+
+
+    <!-- Info-bokser -->
+    <section id="info-bokser" class="container mt-5">
+        <div class="row g-4">
+            <!-- Sosiale medier -->
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card shadow-sm border-0 rounded-3 text-center">
+                    <i class="fab fa-instagram fa-5x text-danger mt-3"></i>
+                    <div class="card-body">
+                        <h5 class="card-title">Sosiale Medier</h5>
+                        <p class="card-text">Følg meg på:</p>
+                        <a href="https://www.instagram.com/theaehansen" class="btn btn-danger btn-sm" target="_blank">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <!-- YouTube-video -->
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/txw4s9PinrM" title="YouTube video" allowfullscreen></iframe>
+                    </div>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">YouTube Video</h5>
+                    </div>
+                </div>
+            </div>
+            <!-- Lokasjon -->
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card shadow-sm border-0 rounded-3 text-center">
+                    <div class="ratio ratio-4x3">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2252.6910629927224!2d8.574570477216918!3d58.334166674147745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4647ee428a0fc789%3A0x9b4aa7f9665e790e!2sUniversitetet%20i%20Agder%20Campus%20Grimstad!5e1!3m2!1sno!2sno!4v1742517184253!5m2!1sno!2sno" 
+                            style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Lokasjon</h5>
+                        <p class="card-text">Besøk meg her!</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Ekstra boks (E-post) -->
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card shadow-sm border-0 rounded-3 text-center">
+                    <i class="fas fa-envelope fa-5x text-danger mt-3"></i>
+                    <div class="card-body">
+                        <h5 class="card-title">Kontakt</h5>
+                        <p class="card-text">Send meg en e-post:</p>
+                        <a href="mailto:tahansen@uia.no" class="btn btn-danger btn-sm">tahansen@uia.no</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bildegalleri (Bootstrap Carousel) -->
+    <section class="container mt-5">
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="images/image1.jpg" class="d-block w-100" alt="Bilde 1">
+                    <div class="carousel-caption">
+                        <h5>Velkommen til min nettside</h5>
+                        <p>Utforsk mine prosjekter og interesser.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="images/image2.jpg" class="d-block w-100" alt="Bilde 2">
+                </div>
+                <div class="carousel-item">
+                    <img src="images/image3.jpg" class="d-block w-100" alt="Bilde 3">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Forrige</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Neste</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 bg-dark text-white">
+        <p>© 2025 Min Personlige Side. Alle rettigheter forbeholdt.</p>
+        <div>
+            <a href="https://www.instagram.com/theaehansen" class="text-white me-3">
+                <i class="fab fa-instagram fa-lg"></i>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS og Popper.js (for interaktive komponenter) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>
