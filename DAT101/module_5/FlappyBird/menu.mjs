@@ -1,6 +1,5 @@
 "use strict";
 import lib2d from "../../common/libs/lib2d.mjs";
-import libSound from "../../common/libs/libSound.mjs";
 import libSprite from "../../common/libs/libSprite.mjs";
 import { SpriteInfoList, GameProps, EGameStatus, startGame } from "./FlappyBird.mjs";
 
@@ -114,6 +113,21 @@ export class TMenu {
     this.#spInfoText.index = 0;
   }
 
+  showCountdown(count) {
+    const countdownElement = document.getElementById("countdown"); // Anta at det finnes et HTML-element med id "countdown"
+    if (countdownElement) {
+      countdownElement.textContent = count; // Oppdater teksten med nedtellingsnummeret
+      countdownElement.style.display = "block"; // Vis elementet
+    }
+  }
+
+  hideCountdown() {
+    const countdownElement = document.getElementById("countdown");
+    if (countdownElement) {
+      countdownElement.style.display = "none"; // Skjul elementet
+    }
+  }
+
   //Ikke eksamensrelevant kode, men viktig for eventer i canvas
   #onMouseMove = (aEvent) => {
     const pos = this.#spcvs.getMousePos(aEvent);
@@ -135,16 +149,27 @@ export class TMenu {
     if (this.#activeSprite === this.#spButtonPlay) {
       GameProps.status = EGameStatus.getReady;
       this.#spcvs.style.cursor = "default";
-      setTimeout(this.#onCountDown, 1000);
+
+      // Start nedtellingen
+      this.#spNumber.index = 3; // Sett nedtellingen til 3
+      this.#onCountDown(); // Start nedtellingen
     }
   };
 
   #onCountDown = () => {
-    if (this.#spNumber.index > 1) {
-      this.#spNumber.index--;
-      setTimeout(this.#onCountDown, 1000);
+    if (this.#spNumber.index > 0) {
+      // Update the countdown number and play the countdown sound
+      console.log(`Countdown: ${this.#spNumber.index}`); // Log the countdown for debugging
+      GameProps.sounds.countDown.currentTime = 0; // Reset the sound to the beginning
+      GameProps.sounds.countDown.play(); // Play the countdown sound
+
+      this.#spNumber.index--; // Decrease the countdown number
+      setTimeout(this.#onCountDown, 1000); // Continue the countdown after 1 second
     } else {
-      startGame();
+      // When the countdown is finished, stop the sound and start the game
+      GameProps.sounds.countDown.pause(); // Stop the countdown sound
+      GameProps.sounds.countDown.currentTime = 0; // Reset the sound
+      startGame(); // Start the game
     }
   };
 } // End of TMenu class
