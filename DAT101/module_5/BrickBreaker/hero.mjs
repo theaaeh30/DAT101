@@ -30,3 +30,4 @@ export class THero {
     return this.#sprites[this.#paddleIndex].shape;
   }
 }
+
