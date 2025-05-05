@@ -22,14 +22,34 @@ export class TBait extends libSprite.TSprite {
 
   update() {
     // Move the bait to a random empty cell on the game board
-    do{
+    do {
       this.#boardCell.col = Math.floor(Math.random() * GameProps.gameBoard.cols);
       this.#boardCell.row = Math.floor(Math.random() * GameProps.gameBoard.rows);
-    }while(GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType !== EBoardCellInfoType.Empty);
+    } while (GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType !== EBoardCellInfoType.Empty);
     this.x = this.#boardCell.col * this.spi.width;
     this.y = this.#boardCell.row * this.spi.height;
     // Update the bait cell info type to Bait
-    GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType = EBoardCellInfoType.Bait
+    GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType = EBoardCellInfoType.Bait;
   } // End of update
 
+  static getRandomEmptyCell() {
+    let emptyCell;
+    do {
+      const row = Math.floor(Math.random() * GameProps.gameBoard.rows);
+      const col = Math.floor(Math.random() * GameProps.gameBoard.cols);
+      const cell = GameProps.gameBoard.getCell(row, col);
+      if (cell.infoType === EBoardCellInfoType.Empty) {
+        emptyCell = new TBoardCell(col, row);
+      }
+    } while (!emptyCell);
+    return emptyCell;
+  } // End of getRandomEmptyCell
+
+  generateNewBait() {
+    const randomCell = TBait.getRandomEmptyCell();
+    this.#boardCell = randomCell;
+    this.x = randomCell.col * this.spi.width; // Update x position
+    this.y = randomCell.row * this.spi.height; // Update y position
+    GameProps.gameBoard.getCell(randomCell.row, randomCell.col).infoType = EBoardCellInfoType.Bait;
+  } // End of generateNewBait
 }

@@ -235,6 +235,13 @@ export class TSnake {
     this.#tail.draw();
   } // draw
 
+  grow() {
+    // Clone the last body part before it moves
+    const lastBodyPart = this.#body[this.#body.length - 1];
+    const newBodyPart = lastBodyPart.clone();
+    this.#body.push(newBodyPart); // Add the new body part to the body array
+  }
+  
   //Returns true if the snake is alive
   update(){
     if (this.#isDead) {

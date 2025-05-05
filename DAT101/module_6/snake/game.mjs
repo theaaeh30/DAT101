@@ -7,42 +7,19 @@ import libSprite from "../../common/libs/libSprite_v2.mjs";
 import { TGameBoard, GameBoardSize, TBoardCell } from "./gameBoard.mjs";
 import { TSnake, EDirection } from "./snake.mjs";
 import { TBait } from "./bait.mjs";
-import { GameMenu } from "./menu.mjs";
+
+
 
 //-----------------------------------------------------------------------------------------
 //----------- variables and object --------------------------------------------------------
 //-----------------------------------------------------------------------------------------//
+
 
 const cvs = document.getElementById("cvs");
 const spcvs = new libSprite.TSpriteCanvas(cvs);
 let gameSpeed = 4; // Game speed multiplier;
 let hndUpdateGame = null;
 export const EGameStatus = { Idle: 0, Playing: 1, Pause: 2, GameOver: 3 };
-
-const menu = new GameMenu();
-
-// Legg til knapper i menyen
-menu.addSpriteButton("sprites/play_button.png", 100, 100, () => {
-    console.log("Game Started");
-    menu.hideMenu();
-    newGame(); // Start spillet
-});
-
-menu.addSpriteButton("sprites/pause_button.png", 100, 100, () => {
-    console.log("Game Paused");
-    pauseGame(); // Pause spillet
-});
-
-menu.addSpriteButton("sprites/retry_button.png", 100, 100, () => {
-    console.log("Retry Game");
-    menu.hideMenu();
-    newGame(); // Start spillet på nytt
-});
-
-// Vis menyen når siden lastes
-window.onload = () => {
-    menu.showMenu();
-};
 
 // prettier-ignore
 export const SheetData = {
@@ -77,11 +54,10 @@ export function newGame() {
 }
 
 export function bateIsEaten() {
-
   console.log("Bait eaten!");
-  /* Logic to increase the snake size and score when bait is eaten */
-
-  increaseGameSpeed(); // Increase game speed
+  GameProps.snake.grow(); // Kall grow for å gjøre slangen større
+  GameProps.bait.generateNewBait(); // Generer et nytt eple
+  increaseGameSpeed(); // Øk hastigheten på spillet
 }
 
 
@@ -125,7 +101,7 @@ function updateGame() {
   switch (GameProps.gameStatus) {
     case EGameStatus.Playing:
       if (!GameProps.snake.update()) {
-        gameOver();
+        GameProps.gameStatus = EGameStatus.GameOver;
         console.log("Game over!");
       }
       break;
@@ -137,22 +113,6 @@ function increaseGameSpeed() {
   console.log("Increase game speed!");
 }
 
-function pauseGame() {
-  GameProps.gameStatus = EGameStatus.Pause;
-  clearInterval(hndUpdateGame); // Stop game updates
-  menu.showPauseMenu();
-}
-
-function resumeGame() {
-  GameProps.gameStatus = EGameStatus.Playing;
-  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Resume game updates
-}
-
-function gameOver() {
-  GameProps.gameStatus = EGameStatus.GameOver;
-  clearInterval(hndUpdateGame); // Stop game updates
-  menu.showGameOverMenu();
-}
 
 //-----------------------------------------------------------------------------------------
 //----------- Event handlers --------------------------------------------------------------
@@ -174,7 +134,8 @@ function onKeyDown(event) {
       break;
     case " ":
       console.log("Space key pressed!");
-      pauseGame();
+      /* Pause the game logic here */
+      
       break;
     default:
       console.log(`Key pressed: "${event.key}"`);
