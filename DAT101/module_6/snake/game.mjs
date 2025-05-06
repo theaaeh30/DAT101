@@ -18,7 +18,7 @@ const spcvs = new libSprite.TSpriteCanvas(cvs);
 let gameSpeed = 4; // Game speed multiplier;
 let hndUpdateGame = null;
 let score = 0; // Legg til poeng
-let baitTimer = Date.now(); // Legg til timer
+
 export const EGameStatus = { Idle: 0, Playing: 1, Pause: 2, GameOver: 3 };
 
 // prettier-ignore
@@ -52,7 +52,7 @@ export function newGame() {
   GameProps.bait = new TBait(spcvs); // Initialize bait with a starting position
   gameSpeed = 4; // Reset game speed
   score = 0; // Nullstill poeng
-  baitTimer = Date.now(); // Restart timer
+  
   console.log("New game started");
 }
 
@@ -74,15 +74,14 @@ export function resumeGame() {
 
 export function bateIsEaten() {
   console.log("Bait eaten!");
-  const timeTaken = (Date.now() - baitTimer) / 1000; // Tid brukt i sekunder
-  const earnedPoints = Math.max(100 - timeTaken * 10, 10); // Minst 10 poeng
-  score += Math.round(earnedPoints); // Oppdater poeng
-  baitTimer = Date.now(); // Restart timer
+  const earnedPoints = 5; // Fast poengsum uten timer
+  score += earnedPoints; // Oppdater poeng
   console.log("Score:", score);
-  GameProps.snake.grow(); // Kall grow for å gjøre slangen større
-  GameProps.bait.generateNewBait(); // Generer nytt eple
-  increaseGameSpeed(); // Øk hastigheten på spillet
+  GameProps.snake.grow(); // Slangen vokser
+  GameProps.bait.generateNewBait(); // Ny agn genereres
+  increaseGameSpeed(); // Øk hastighet
 }
+
 
 //------------------------------------------------------------------------------------------
 //----------- functions -------------------------------------------------------------------
@@ -115,18 +114,8 @@ function drawMenu() {
 
 function drawGameOver() {
   const ctx = spcvs.context;
-  ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-  ctx.fillRect(0, 0, cvs.width, cvs.height);
-
-  ctx.font = "48px Arial";
-  ctx.fillStyle = "#ffffff";
-  ctx.textAlign = "center";
-  ctx.fillText("Game Over", cvs.width / 2, cvs.height / 2 - 50);
-
-  ctx.font = "24px Arial";
-  ctx.fillText(`Score: ${score}`, cvs.width / 2, cvs.height / 2);
-
-  ctx.fillText("Press R to Retry", cvs.width / 2, cvs.height / 2 + 50);
+ 
+  
 }
 
 function drawScore() {
@@ -170,10 +159,10 @@ function updateGame() {
 
 function increaseGameSpeed() {
   if (gameSpeed < 20) {
-    gameSpeed += 1; // Øk hastigheten med 1
-    clearInterval(hndUpdateGame); // Stopp eksisterende oppdateringsintervall
-    hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Start nytt intervall med økt hastighet
-    console.log("Increased speed to", gameSpeed); // Logg den nye hastigheten
+    gameSpeed += 1; 
+    clearInterval(hndUpdateGame); 
+    hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); 
+    console.log("Increased speed to", gameSpeed); 
   }
 }
 
