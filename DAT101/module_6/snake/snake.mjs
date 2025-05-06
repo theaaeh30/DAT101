@@ -85,12 +85,13 @@ class TSnakeHead extends TSnakePart {
   }
 
   checkCollision() {
-    let collision = this.boardCell.row < 0 || this.boardCell.row >= GameProps.gameBoard.rows || this.boardCell.col < 0 || this.boardCell.col >= GameProps.gameBoard.cols;
-    if(!collision) {
-      const boardCellInfo = GameProps.gameBoard.getCell(this.boardCell.row, this.boardCell.col);
-      collision = boardCellInfo.infoType === EBoardCellInfoType.Snake;
-    }
-    return collision; // Collision detected
+    // Sjekk kun for kollisjon med kantene
+    return (
+      this.boardCell.row < 0 || 
+      this.boardCell.row >= GameProps.gameBoard.rows || 
+      this.boardCell.col < 0 || 
+      this.boardCell.col >= GameProps.gameBoard.cols
+    );
   }
 }
 
@@ -172,22 +173,21 @@ class TSnakeTail extends TSnakePart {
     this.boardCell = { ...lastBodyPart.boardCell };
     switch (lastBodyPart.direction) {
       case EDirection.Up:
-        this.boardCell.row++; // Flytt ned
-        this.index = ESpriteIndex.UD; // Vertikal hale
+        this.boardCell.row++; // Flytt halen én celle ned
         break;
       case EDirection.Down:
-        this.boardCell.row--; // Flytt opp
-        this.index = ESpriteIndex.UD; // Vertikal hale
+        this.boardCell.row--; // Flytt halen én celle opp
         break;
       case EDirection.Left:
-        this.boardCell.col++; // Flytt til høyre
-        this.index = ESpriteIndex.RL; // Horisontal hale
+        this.boardCell.col++; // Flytt halen én celle til høyre
         break;
       case EDirection.Right:
-        this.boardCell.col--; // Flytt til venstre
-        this.index = ESpriteIndex.RL; // Horisontal hale
+        this.boardCell.col--; // Flytt halen én celle til venstre
         break;
     }
+
+    // Bruk alltid samme sprite for halen
+    this.index = ESpriteIndex.UD; // Eller RL hvis ønsket
 
     super.update();
   }

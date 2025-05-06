@@ -54,5 +54,45 @@ menu.addButton("New Game", () => {
   menu.hideMenu();
 });
 
+// Funksjon for å tegne Game Over-skjermen
+export function drawGameOverScreen(ctx, canvas, score) {
+  // Bakgrunn
+  ctx.fillStyle = "#FFD700"; // Gul bakgrunn
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Grønn ramme med mønster
+  const frameX = 50, frameY = 100, frameW = canvas.width - 100, frameH = 200;
+  ctx.fillStyle = "#2db84d"; // Grønn kant
+  ctx.fillRect(frameX - 10, frameY - 10, frameW + 20, frameH + 20);
+
+  // Oransje rute inni ramma
+  ctx.fillStyle = "#FFD700"; // Samme som bakgrunn
+  ctx.fillRect(frameX, frameY, frameW, frameH);
+
+  // Game Over tekst
+  ctx.fillStyle = "#f04d26"; // Rød tekst
+  ctx.font = "bold 48px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("GAME OVER", canvas.width / 2, frameY + 60);
+
+  // Score
+  ctx.font = "bold 36px Arial";
+  ctx.fillText(`SCORE: ${score}`, canvas.width / 2, frameY + 120);
+
+  // Restart-knapp
+  ctx.fillStyle = "#2db84d"; // Grønn bakgrunn
+  ctx.fillRect(frameX + frameW - 80, frameY + frameH - 70, 60, 60);
+  ctx.fillStyle = "#FFD700"; // Gul pil
+  ctx.font = "40px Arial";
+  ctx.fillText("↻", frameX + frameW - 50, frameY + frameH - 25);
+
+  // Hjem-knapp
+  ctx.fillStyle = "#2db84d"; // Grønn bakgrunn
+  ctx.fillRect(frameX + 20, frameY + frameH - 70, 60, 60);
+  ctx.fillStyle = "#FFD700"; // Gul hus-symbol
+  ctx.font = "40px Arial";
+  ctx.fillText("⌂", frameX + 50, frameY + frameH - 25);
+}
+
 export default menu;
 
