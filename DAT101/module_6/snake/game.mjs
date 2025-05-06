@@ -5,9 +5,9 @@
 //-----------------------------------------------------------------------------------------
 import libSprite from "../../common/libs/libSprite_v2.mjs";
 import { TGameBoard, GameBoardSize, TBoardCell } from "./gameBoard.mjs";
-import { TSnake, EDirection } from "./snake.mjs";
 import { TBait } from "./bait.mjs";
 import menu from "./menu.mjs";
+import { TSnake, EDirection } from "./snake.mjs"; // Importer TSnake fra snake.mjs
 
 //-----------------------------------------------------------------------------------------
 //----------- variables and object --------------------------------------------------------
@@ -114,20 +114,19 @@ function drawMenu() {
 }
 
 function drawGameOver() {
-  const gameOverSprite = new libSprite.TSprite(spcvs, SheetData.GameOver, { x: 100, y: 100 });
-  spcvs.addSprite(gameOverSprite);
+  const ctx = spcvs.context;
+  ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
 
-  const retryButton = new libSprite.TSprite(spcvs, SheetData.Retry, { x: 200, y: 300 });
-  retryButton.onClick = () => {
-    newGame();
-  };
-  spcvs.addSpriteButton(retryButton);
+  ctx.font = "48px Arial";
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.fillText("Game Over", cvs.width / 2, cvs.height / 2 - 50);
 
-  const homeButton = new libSprite.TSprite(spcvs, SheetData.Home, { x: 400, y: 300 });
-  homeButton.onClick = () => {
-    menu.showMenu();
-  };
-  spcvs.addSpriteButton(homeButton);
+  ctx.font = "24px Arial";
+  ctx.fillText(`Score: ${score}`, cvs.width / 2, cvs.height / 2);
+
+  ctx.fillText("Press R to Retry", cvs.width / 2, cvs.height / 2 + 50);
 }
 
 function drawScore() {
