@@ -21,15 +21,26 @@ export class TBait extends libSprite.TSprite {
   } // End of constructor
 
   update() {
-    // Move the bait to a random empty cell on the game board
+    // Flytt agnet til en tilfeldig tom celle på spillbrettet
     do {
       this.#boardCell.col = Math.floor(Math.random() * GameProps.gameBoard.cols);
       this.#boardCell.row = Math.floor(Math.random() * GameProps.gameBoard.rows);
-    } while (GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType !== EBoardCellInfoType.Empty);
+    } while (
+      GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType !== EBoardCellInfoType.Empty
+    );
+
     this.x = this.#boardCell.col * this.spi.width;
     this.y = this.#boardCell.row * this.spi.height;
-    // Update the bait cell info type to Bait
+
+    // Oppdater celletypen til Bait
     GameProps.gameBoard.getCell(this.#boardCell.row, this.#boardCell.col).infoType = EBoardCellInfoType.Bait;
+
+    // Start nedtelling for agnet
+    if (GameProps.menu && GameProps.menu.startBaitCountdown) {
+      GameProps.menu.startBaitCountdown();
+    }
+
+    this.spawnTime = Date.now(); // Registrer tidspunktet agnet dukker opp
   } // End of update
 
   static getRandomEmptyCell() {
@@ -48,8 +59,8 @@ export class TBait extends libSprite.TSprite {
   generateNewBait() {
     const randomCell = TBait.getRandomEmptyCell();
     this.#boardCell = randomCell;
-    this.x = randomCell.col * this.spi.width; // Update x position
-    this.y = randomCell.row * this.spi.height; // Update y position
+    this.x = randomCell.col * this.spi.width; // Oppdater x-posisjon
+    this.y = randomCell.row * this.spi.height; // Oppdater y-posisjon
     GameProps.gameBoard.getCell(randomCell.row, randomCell.col).infoType = EBoardCellInfoType.Bait;
   } // End of generateNewBait
 }
