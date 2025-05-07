@@ -63,4 +63,21 @@ export class TBait extends libSprite.TSprite {
     this.y = randomCell.row * this.spi.height; // Oppdater y-posisjon
     GameProps.gameBoard.getCell(randomCell.row, randomCell.col).infoType = EBoardCellInfoType.Bait;
   } // End of generateNewBait
+
+  baitIsEaten() {
+    console.log("Bait eaten!");
+    GameProps.snake.addSnakePart(); // Legg til en ny kroppsdel til slangen
+    this.update(); // Flytt agnet til en ny posisjon
+
+    // Oppdater antall epler spist
+    GameProps.appleCount += 1; // Øk antall epler med 1
+    console.log("Apple count incremented to:", GameProps.appleCount);
+    GameProps.menu.updateAppleCount(GameProps.appleCount); // Oppdater visningen av antall epler
+
+    // Oppdater poengsum med en tilfeldig verdi mellom 4 og 6
+    const scoreIncrement = Math.floor(Math.random() * 3) + 4; // Tilfeldig verdi mellom 4 og 6
+    GameProps.totalScore += scoreIncrement;
+    console.log("Score incremented by:", scoreIncrement, "New total score:", GameProps.totalScore);
+    GameProps.menu.updateTotalScore(GameProps.totalScore); // Oppdater visningen av poengsummen
+  } // End of baitIsEaten
 }

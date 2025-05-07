@@ -171,7 +171,16 @@ export class TMenu {
   }
 
   updateTotalScore(value) {
-    this.#totalScoreNumber.value = value;
+    this.#totalScoreNumber.scale = 0.6; // Gjør tallene mindre
+    this.#totalScoreNumber.spacing = 10; // Øk mellomrommet mellom tallene
+    this.#totalScoreNumber.value = value; // Oppdater poengsummen som vises
+  }
+
+  updateAppleCount(count) {
+    console.log("Updating apple count display to:", count);
+    this.#timeScoreNumber.scale = 0.6; // Gjør tallene mindre
+    this.#timeScoreNumber.spacing = 10; // Øk mellomrommet mellom tallene
+    this.#timeScoreNumber.value = count; // Oppdater antall epler som vises
   }
 
   reduceTotalScore() {
@@ -215,6 +224,15 @@ export class TMenu {
 
   addRemainingSeconds() {
     return this.#timeScoreNumber.value;
+  }
+
+  showGameOverScore(score) {
+    // Plassering for scoren på "Game Over"-skjermen
+    const scorePos = new lib2D.TPoint(400, 300); // Juster posisjonen etter behov
+    const scoreDisplay = new libSprite.TSpriteNumber(this.#spcvs, SheetData.Number, scorePos);
+    scoreDisplay.scale = 1.5; // Gjør scoren større for bedre synlighet
+    scoreDisplay.value = score; // Sett scoren
+    scoreDisplay.draw(); // Tegn scoren på skjermen
   }
 }
 

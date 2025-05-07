@@ -39,6 +39,7 @@ export const GameProps = {
   menu: null,
   totalScore: 0,
   baitSpawnTime: null,
+  appleCount: 0, // Legg til en egenskap for antall epler spist
 };
 
 //------------------------------------------------------------------------------------------
@@ -52,14 +53,14 @@ export function newGame() {
   gameSpeed = 4; // Reset game speed
   hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Update game every 1000ms / gameSpeed
   GameProps.totalScore = 0; // Reset total score
+  GameProps.appleCount = 0; // Reset apple count
   GameProps.menu.updateTotalScore(0); // Update the score on the menu
+  GameProps.menu.updateAppleCount(0); // Reset apple count display
   GameProps.menu.showMenu(); // Oppdater menyen
 }
 
 export function baitIsEaten() {
-  console.log("Bait eaten!");
-  GameProps.snake.addSnakePart(); // Legg til en ny kroppsdel
-  GameProps.bait.update(); // Flytt agnet til en ny posisjon
+  GameProps.bait.baitIsEaten(); // Flytt logikken til bait.mjs
   increaseGameSpeed(); // Øk spillhastigheten
 }
 
@@ -129,6 +130,7 @@ function updateGame() {
       GameProps.gameStatus = EGameStatus.GameOver;
       GameProps.menu.showMenu(); // Oppdater menyen ved Game Over
       console.log("Game over!");
+      GameProps.menu.showGameOverScore(GameProps.totalScore); // Vis scoren på "Game Over"-skjermen
     }
   }
 }

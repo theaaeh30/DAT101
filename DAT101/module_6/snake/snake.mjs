@@ -52,36 +52,41 @@ class TSnakeHead extends TSnakePart {
     }
   }
 
-  update(){
-    GameProps.gameBoard.getCell(this.boardCell.row,this.boardCell.col).direction = this.newDirection;
-    switch (this.newDirection) {
-      case EDirection.Up:
-        this.boardCell.row--;
-        break;
-      case EDirection.Right:
-        this.boardCell.col++;
-        break;
-      case EDirection.Left:
-        this.boardCell.col--;
-        break;
-      case EDirection.Down:
-        this.boardCell.row++;
-        break;
+  update() {
+    try {
+      GameProps.gameBoard.getCell(this.boardCell.row, this.boardCell.col).direction = this.newDirection;
+      switch (this.newDirection) {
+        case EDirection.Up:
+          this.boardCell.row--;
+          break;
+        case EDirection.Right:
+          this.boardCell.col++;
+          break;
+        case EDirection.Left:
+          this.boardCell.col--;
+          break;
+        case EDirection.Down:
+          this.boardCell.row++;
+          break;
+      }
+      this.direction = this.newDirection;
+      this.index = this.direction;
+      if (this.checkCollision()) {
+        return false; // Collision detected, do not continue
+      }
+      // Update the position of the snake element (subclass)
+      super.update();
+      // Check if the snake head is on a bait cell
+      const boardCellInfo = GameProps.gameBoard.getCell(this.boardCell.row, this.boardCell.col);
+      if (boardCellInfo.infoType === EBoardCellInfoType.Bait) {
+        baitIsEaten();
+      }
+      boardCellInfo.infoType = EBoardCellInfoType.Snake; // Set the cell to Snake
+      return true; // No collision, continue
+    } catch (error) {
+      console.error("Error in TSnakeHead.update:", error);
+      return false;
     }
-    this.direction = this.newDirection;
-    this.index = this.direction;
-    if (this.checkCollision()) {
-      return false; // Collision detected, do not continue
-    }
-    // Update the position of the snake element (subclass)
-    super.update();
-    //Check if the snake head is on a bait cell
-    const boardCellInfo = GameProps.gameBoard.getCell(this.boardCell.row, this.boardCell.col);
-    if(boardCellInfo.infoType === EBoardCellInfoType.Bait) {
-      baitIsEaten(); // Rettet skrivefeilen her
-    }
-    boardCellInfo.infoType = EBoardCellInfoType.Snake; // Set the cell to Snake
-    return true; // No collision, continue
   }
 
   checkCollision() {
