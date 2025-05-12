@@ -1,20 +1,20 @@
 "use strict";
 
 //-----------------------------------------------------------------------------------------
-//----------- Import modules, mjs files  ---------------------------------------------------
+//----------- Importer moduler og mjs-filer ------------------------------------------------
 //-----------------------------------------------------------------------------------------
 import libSprite from "../../common/libs/libSprite_v2.mjs";
-import lib2D from "../../common/libs/lib2d_v2.mjs";
 import { TGameBoard, GameBoardSize, TBoardCell } from "./gameBoard.mjs";
 import { TSnake, EDirection } from "./snake.mjs";
 import { TBait } from "./bait.mjs";
 import TMenu from "./menu.mjs";
 
 //-----------------------------------------------------------------------------------------
-//----------- variables and object ---------------------------------------------------------
+//----------- Variabler og objekter -------------------------------------------------------
+//-----------------------------------------------------------------------------------------
 const cvs = document.getElementById("cvs");
 const spcvs = new libSprite.TSpriteCanvas(cvs);
-let gameSpeed = 4; // Game speed multiplier
+let gameSpeed = 4; // Spillhastighetsmultiplikator
 let hndUpdateGame = null;
 export const EGameStatus = { Idle: 0, Playing: 1, Pause: 2, GameOver: 3 };
 
@@ -43,19 +43,19 @@ export const GameProps = {
 };
 
 //------------------------------------------------------------------------------------------
-//----------- Exported functions -----------------------------------------------------------
+//----------- Eksporterte funksjoner -------------------------------------------------------
 
 export function newGame() {
-  if (hndUpdateGame) clearInterval(hndUpdateGame); // Clear the previous game interval
+  if (hndUpdateGame) clearInterval(hndUpdateGame); // Stopp forrige spillintervall
   GameProps.gameBoard = new TGameBoard();
-  GameProps.snake = new TSnake(spcvs, new TBoardCell(5, 5)); // Initialize snake with a starting position
-  GameProps.bait = new TBait(spcvs); // Initialize bait with a starting position
-  gameSpeed = 4; // Reset game speed
-  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Update game every 1000ms / gameSpeed
-  GameProps.totalScore = 0; // Reset total score
-  GameProps.appleCount = 0; // Reset apple count
-  GameProps.menu.updateTotalScore(0); // Update the score on the menu
-  GameProps.menu.updateAppleCount(0); // Reset apple count display
+  GameProps.snake = new TSnake(spcvs, new TBoardCell(5, 5)); // Initialiser slangen med en startposisjon
+  GameProps.bait = new TBait(spcvs); // Initialiser agnet med en startposisjon
+  gameSpeed = 4; // Tilbakestill spillhastigheten
+  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Oppdater spillet hvert 1000ms / spillhastighet
+  GameProps.totalScore = 0; // Tilbakestill total poengsum
+  GameProps.appleCount = 0; // Tilbakestill antall epler
+  GameProps.menu.updateTotalScore(0); // Oppdater poengsummen i menyen
+  GameProps.menu.updateAppleCount(0); // Tilbakestill visningen av antall epler
   GameProps.menu.showMenu(); // Oppdater menyen
 }
 
@@ -65,40 +65,40 @@ export function baitIsEaten() {
 }
 
 //------------------------------------------------------------------------------------------
-//----------- functions -------------------------------------------------------------------
+//----------- Funksjoner -------------------------------------------------------------------
 
 function loadGame() {
   cvs.width = GameBoardSize.Cols * SheetData.Head.width;
   cvs.height = GameBoardSize.Rows * SheetData.Head.height;
 
-  GameProps.gameStatus = EGameStatus.Idle; // Set game status to Idle
+  GameProps.gameStatus = EGameStatus.Idle; // Sett spillstatus til Idle
 
   // Opprett menyen
   GameProps.menu = new TMenu(spcvs);
   GameProps.menu.setPlayTrigger(() => {
-    newGame(); // Start a new game
-    GameProps.gameStatus = EGameStatus.Playing; // Set game status to Playing
+    newGame(); // Start et nytt spill
+    GameProps.gameStatus = EGameStatus.Playing; // Sett spillstatus til Playing
   });
   GameProps.menu.setHomeTrigger(() => {
-    GameProps.gameBoard = null; // Clear the game board
-    GameProps.snake = null; // Clear the snake
-    GameProps.bait = null; // Clear the bait
-    GameProps.gameStatus = EGameStatus.Idle; // Set game status to Idle
+    GameProps.gameBoard = null; // Fjern spillbrettet
+    GameProps.snake = null; // Fjern slangen
+    GameProps.bait = null; // Fjern agnet
+    GameProps.gameStatus = EGameStatus.Idle; // Sett spillstatus til Idle
     GameProps.menu.showMenu(); // Oppdater menyen
   });
   GameProps.menu.setRestartTrigger(() => {
-    newGame(); // Restart the game
-    GameProps.gameStatus = EGameStatus.Playing; // Set game status to Playing
+    newGame(); // Start spillet på nytt
+    GameProps.gameStatus = EGameStatus.Playing; // Sett spillstatus til Playing
   });
   GameProps.menu.setResumeTrigger(() => {
-    GameProps.gameStatus = EGameStatus.Playing; // Set game status to Playing
-    hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Restart the game update interval
+    GameProps.gameStatus = EGameStatus.Playing; // Sett spillstatus til Playing
+    hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Start spilloppdateringsintervall på nytt
   });
 
-  requestAnimationFrame(drawGame); // Start the game loop
-  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Update game every 1000ms / gameSpeed
-  console.log("Game canvas is rendering!");
-  console.log("Game canvas is updating!");
+  requestAnimationFrame(drawGame); // Start spill-løkken
+  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Oppdater spillet hvert 1000ms / spillhastighet
+  console.log("Spillcanvaset rendrer!");
+  console.log("Spillcanvaset oppdateres!");
 }
 
 function drawGame() {
@@ -129,21 +129,21 @@ function updateGame() {
     if (!GameProps.snake.update()) {
       GameProps.gameStatus = EGameStatus.GameOver;
       GameProps.menu.showMenu(); // Oppdater menyen ved Game Over
-      console.log("Game over!");
-      GameProps.menu.showGameOverScore(GameProps.totalScore); // Vis scoren på "Game Over"-skjermen
+      console.log("Spillet er over!");
+      GameProps.menu.showGameOverScore(GameProps.totalScore); // Vis poengsummen på "Game Over"-skjermen
     }
   }
 }
 
 function increaseGameSpeed() {
   gameSpeed += 0.5;
-  clearInterval(hndUpdateGame); // Clear the previous game interval
-  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Update game every 1000ms / gameSpeed
-  console.log("Increase game speed!");
+  clearInterval(hndUpdateGame); // Stopp forrige spillintervall
+  hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Oppdater spillet hvert 1000ms / spillhastighet
+  console.log("Øk spillhastigheten!");
 }
 
 //-----------------------------------------------------------------------------------------
-//----------- Event handlers --------------------------------------------------------------
+//----------- Hendelsesbehandlere ---------------------------------------------------------
 
 function onKeyDown(event) {
   switch (event.key) {
@@ -162,22 +162,22 @@ function onKeyDown(event) {
     case " ":
       if (GameProps.gameStatus === EGameStatus.Playing) {
         GameProps.gameStatus = EGameStatus.Pause;
-        clearInterval(hndUpdateGame); // Stop the game update interval
+        clearInterval(hndUpdateGame); // Stopp spilloppdateringsintervall
         GameProps.menu.showMenu(); // Oppdater menyen
-        console.log("Game paused!");
+        console.log("Spillet er satt på pause!");
       } else if (GameProps.gameStatus === EGameStatus.Pause) {
         GameProps.gameStatus = EGameStatus.Playing;
-        hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Restart the game update interval
-        console.log("Game resumed!");
+        hndUpdateGame = setInterval(updateGame, 1000 / gameSpeed); // Start spilloppdateringsintervall på nytt
+        console.log("Spillet er gjenopptatt!");
       }
       break;
     default:
-      console.log(`Key pressed: "${event.key}"`);
+      console.log(`Tast trykket: "${event.key}"`);
   }
 }
 
 //-----------------------------------------------------------------------------------------
-//----------- main -----------------------------------------------------------------------
+//----------- Hovedprogram ----------------------------------------------------------------
 
 spcvs.loadSpriteSheet("./Media/spriteSheet.png", loadGame);
 document.addEventListener("keydown", onKeyDown);

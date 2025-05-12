@@ -74,8 +74,8 @@ export class TBait extends libSprite.TSprite {
     console.log("Apple count incremented to:", GameProps.appleCount);
     GameProps.menu.updateAppleCount(GameProps.appleCount); // Oppdater visningen av antall epler
 
-    // Oppdater poengsum med en tilfeldig verdi mellom 4 og 6
-    const scoreIncrement = Math.floor(Math.random() * 3) + 4; // Tilfeldig verdi mellom 4 og 6
+    // Oppdater poengsum med en tilfeldig verdi mellom 2 og 7
+    const scoreIncrement = Math.floor(Math.random() * 6) + 2; // Tilfeldig verdi mellom 2 og 7
     GameProps.totalScore += scoreIncrement;
     console.log("Score incremented by:", scoreIncrement, "New total score:", GameProps.totalScore);
     GameProps.menu.updateTotalScore(GameProps.totalScore); // Oppdater visningen av poengsummen

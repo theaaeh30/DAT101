@@ -18,6 +18,7 @@ export class TMenu {
   #resumeTrigger = null;
   #totalScoreNumber;
   #timeScoreNumber;
+  #gameOverScoreNumber;
   #currentCountdown = false;
 
   constructor(aSpriteCanvas) {
@@ -32,7 +33,7 @@ export class TMenu {
     this.#spPlay.animateSpeed = 15; // Start blinkingen
     this.#spPlay.onClick = () => {
       if (this.#playTrigger) this.#playTrigger();
-      console.log("Play button clicked");
+      console.log("Play-knappen ble trykket");
     };
 
     // Resume-knapp
@@ -41,7 +42,7 @@ export class TMenu {
     this.#spResume.animateSpeed = 15; // Start blinkingen
     this.#spResume.onClick = () => {
       if (this.#resumeTrigger) this.#resumeTrigger();
-      console.log("Resume button clicked");
+      console.log("Resume-knappen ble trykket");
     };
 
     // Menybrett
@@ -56,7 +57,7 @@ export class TMenu {
     this.#buttonHome.shape.height = homeShapeSize.height;
     this.#buttonHome.onClick = () => {
       if (this.#homeTrigger) this.#homeTrigger();
-      console.log("Home button clicked");
+      console.log("Hjem-knappen ble trykket");
     };
 
     // Restart-knapp
@@ -67,10 +68,10 @@ export class TMenu {
     this.#buttonRestart.shape.height = restartShapeSize.height;
     this.#buttonRestart.onClick = () => {
       if (this.#restartTrigger) this.#restartTrigger();
-      console.log("Restart button clicked");
+      console.log("Restart-knappen ble trykket");
     };
 
-    // Total score
+    // Total poengsum
     const totalScorePos = new lib2D.TPoint(10, 80);
     this.#totalScoreNumber = new libSprite.TSpriteNumber(aSpriteCanvas, SheetData.Number, totalScorePos);
     this.#totalScoreNumber.scale = 0.9;
@@ -83,6 +84,12 @@ export class TMenu {
     this.#timeScoreNumber.scale = 0.6;
     this.#timeScoreNumber.visible = true;
     this.#timeScoreNumber.value = 0;
+
+    // Poengsum for Game Over
+    const gameOverScorePos = new lib2D.TPoint(530, 240); // Juster x til 530 og y til 240 for korrekt plassering
+    this.#gameOverScoreNumber = new libSprite.TSpriteNumber(aSpriteCanvas, SheetData.Number, gameOverScorePos);
+    this.#gameOverScoreNumber.scale = 0.9; // Juster skalaen hvis nødvendig
+    this.#gameOverScoreNumber.visible = false;
   }
 
   draw() {
@@ -114,12 +121,15 @@ export class TMenu {
       case EGameStatus.GameOver:
         this.#spPlay.visible = false;
         this.#spResume.visible = false;
-        this.#totalScoreNumber.visible = true;
         this.#spMenuBoard.draw();
         this.#buttonHome.draw();
         this.#buttonHome.visible = true;
         this.#buttonRestart.visible = true;
         this.#buttonRestart.draw();
+
+        this.#gameOverScoreNumber.value = GameProps.totalScore;
+        this.#gameOverScoreNumber.visible = true;
+        this.#gameOverScoreNumber.draw();
         break;
     }
   }
@@ -171,13 +181,12 @@ export class TMenu {
   }
 
   updateTotalScore(value) {
-    this.#totalScoreNumber.scale = 0.6; // Gjør tallene mindre
-    this.#totalScoreNumber.spacing = 10; // Øk mellomrommet mellom tallene
+    console.log("Oppdaterer total poengsum til:", value);
     this.#totalScoreNumber.value = value; // Oppdater poengsummen som vises
   }
 
   updateAppleCount(count) {
-    console.log("Updating apple count display to:", count);
+    console.log("Oppdaterer antall epler til:", count);
     this.#timeScoreNumber.scale = 0.6; // Gjør tallene mindre
     this.#timeScoreNumber.spacing = 10; // Øk mellomrommet mellom tallene
     this.#timeScoreNumber.value = count; // Oppdater antall epler som vises
@@ -186,7 +195,7 @@ export class TMenu {
   reduceTotalScore() {
     if (this.#totalScoreNumber.value > 1) {
       this.#totalScoreNumber.value--;
-      console.log("ReduceTotalScore");
+      console.log("Reduserer total poengsum");
     }
   }
 
@@ -201,12 +210,12 @@ export class TMenu {
       const now = Date.now();
       const elapsed = now - lastTick;
 
-      if (elapsed >= 1000) {
-        lastTick = now;
-        if (this.#timeScoreNumber.value > 0) {
-          this.#timeScoreNumber.value--;
-        }
-      }
+      /* if (elapsed >= 1000) {
+          lastTick = now;
+          if (this.#timeScoreNumber.value > 0) {
+            this.#timeScoreNumber.value--;
+          }
+        } */
 
       if (this.#timeScoreNumber.value > 0 && GameProps.gameStatus === EGameStatus.Playing) {
         requestAnimationFrame(countdown);
